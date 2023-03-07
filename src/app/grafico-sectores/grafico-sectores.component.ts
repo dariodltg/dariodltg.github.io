@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {Chart} from 'chart.js/auto';
+import { Component, OnInit, Input } from '@angular/core';
+import {Chart, Colors} from 'chart.js/auto';
 
 @Component({
   selector: 'app-grafico-sectores',
@@ -7,7 +7,7 @@ import {Chart} from 'chart.js/auto';
   styleUrls: ['./grafico-sectores.component.css']
 })
 export class GraficoSectoresComponent implements OnInit {
-
+  
   constructor() { }
 
   public graficoSectores: any;
@@ -21,28 +21,37 @@ export class GraficoSectoresComponent implements OnInit {
       type: 'pie', //this denotes tha type of chart
 
       data: {// values on X-Axis
-        labels: ['2022-05-10', '2022-05-11', '2022-05-12','2022-05-13',
-								 '2022-05-14', '2022-05-15', '2022-05-16','2022-05-17', ], 
+        labels: [], 
 	       datasets: [
           {
-            label: "Sales",
-            data: ['467','576', '572', '79', '92',
-								 '574', '573', '576'],
-            backgroundColor: 'blue'
-          },
-          {
-            label: "Profit",
-            data: ['542', '542', '536', '327', '17',
-									 '0.00', '538', '541'],
-            backgroundColor: 'limegreen'
-          }  
+            label: "Prueba",
+            data: [],
+          }, 
         ]
       },
-      options: {
-        aspectRatio:2.5
-      }
       
     });
+  }
+
+  updateChart(datos, etiquetas){
+    console.log("ACTUALIZAR GRAFICO SECTORES");
+    console.log(datos);
+    console.log(etiquetas);
+    var colors = [];
+    for(let i=0; i< datos.length; i++){
+      var color = this.selectColor(datos.length);
+      colors.push(color);
+    }
+    console.log(colors);
+    this.graficoSectores.data.datasets[0].data=datos;
+    this.graficoSectores.data.labels=etiquetas;
+    //this.graficoSectores.data.datasets[0].backgroundColor= colors;
+    this.graficoSectores.update();
+  }
+
+  selectColor(number) {
+    const hue = number * 137.508; // use golden angle approximation
+    return `hsl(${hue},50%,75%)`;
   }
 
 }

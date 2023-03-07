@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { MatRadioChange } from '@angular/material/radio';
 import { MatSelectChange } from '@angular/material/select';
 
@@ -22,8 +22,11 @@ export class MenuFiltrosComponent implements OnInit {
   comunidadList: string[] = ['Castilla y León','Madrid','Andalucía'];
   comunidadSelected = this.comunidadList[0];
 
+  @Output() actualizar = new EventEmitter<object>(); 
+
   cambioOpcion($event: MatRadioChange) {
-    console.log($event.source.name, $event.value);
+    console.log($event.value);
+    this.opcionSelected=$event.value;
     this.actualizarDatos();
   }
 
@@ -41,17 +44,9 @@ export class MenuFiltrosComponent implements OnInit {
     var year = this.yearSelected;
     var comunidad = this.comunidadSelected;
     var opcion = this.opcionSelected;
-    this.getDatosCsv(year, comunidad, opcion)
+    console.log(opcion);
+    console.log(year);
+    console.log(comunidad);
+    this.actualizar.emit({y: year, c: comunidad, o:opcion})
   }
-
-  async getDatosCsv(year, comunidad, opcion) {
-    const url = "/assets/total_sectores_"+year+".csv";
-    const response = await fetch(url);
-    const datos = await response.text();
-    console.log(datos);
-
-    
-
-
-   }
 }
