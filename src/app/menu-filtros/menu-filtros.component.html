@@ -1,9 +1,33 @@
-<label id="example-radio-group-label">Ver datos de:</label>
-<mat-radio-group
-  aria-labelledby="example-radio-group-label"
-  class="example-radio-group"
-  [(ngModel)]="opcionSeleccionada">
-  <mat-radio-button class="example-radio-button" *ngFor="let season of seasons" [value]="season">
-    {{season}}
-  </mat-radio-button>
-</mat-radio-group>
+<div class="row">
+  <div class="column">
+    <mat-radio-group
+      aria-labelledby="example-radio-group-label"
+      class="example-radio-group"
+      [(ngModel)]="opcionSelected">
+      <mat-radio-button class="example-radio-button" *ngFor="let opcion of opciones" [value]="opcion" (change)="cambioOpcion($event)">
+        {{opcion}}
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <div class="column">
+    <mat-form-field>
+      <mat-label>Selecciona un año</mat-label>
+      <mat-select [(ngModel)]="yearSelected" (selectionChange)="yearChange($event)">
+        <mat-option *ngFor="let year of yearList" [value]="year">{{year}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="column">
+    <mat-form-field>
+      <mat-label>Selecciona una comunidad</mat-label>
+      <mat-select [(ngModel)]="comunidadSelected" (selectionChange)="comunidadChange($event)">
+        <mat-option *ngFor="let comunidad of comunidadList" [value]="comunidad">{{comunidad}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+
+
+
+
+

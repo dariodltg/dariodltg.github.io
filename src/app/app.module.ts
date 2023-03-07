@@ -9,7 +9,7 @@ import { GraficoBarrasComponent } from './grafico-barras/grafico-barras.componen
 import { GraficoSectoresComponent } from './grafico-sectores/grafico-sectores.component';
 import { MenuFiltrosComponent } from './menu-filtros/menu-filtros.component';
 import { MatRadioModule } from '@angular/material/radio';
-import { FormsModule } from '@angular/forms';
+import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { DashComponent } from './dash/dash.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
@@ -18,6 +18,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { LayoutModule } from '@angular/cdk/layout';
 import { CardComponent } from './card/card.component';
+import { MatNativeDateModule } from '@angular/material/core';
+import {MatSelectModule} from '@angular/material/select';
+
 
 @NgModule({
   declarations: [
@@ -35,12 +38,15 @@ import { CardComponent } from './card/card.component';
     BrowserAnimationsModule,
     MatRadioModule,
     FormsModule,
+    ReactiveFormsModule,
     MatGridListModule,
     MatCardModule,
     MatMenuModule,
     MatIconModule,
     MatButtonModule,
-    LayoutModule
+    LayoutModule,
+    MatNativeDateModule,
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]
