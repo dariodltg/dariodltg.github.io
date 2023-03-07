@@ -1,0 +1,22 @@
+  <mat-grid-list cols="3" rowHeight="16rem">
+    <mat-grid-tile [colspan]="( cardLayout | async )?.mapa.cols" [rowspan]="( cardLayout | async )?.mapa.rows">
+      <app-card >
+        <app-mapa-coropletas></app-mapa-coropletas>
+      </app-card>     
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="( cardLayout | async )?.barras.cols" [rowspan]="( cardLayout | async )?.barras.rows">
+      <app-card title="Gráfico de barras">
+        <app-grafico-barras></app-grafico-barras>
+      </app-card>     
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="( cardLayout | async )?.sectores.cols" [rowspan]="( cardLayout | async )?.sectores.rows">
+      <app-card title="Gráfico de sectores">
+        <app-grafico-sectores></app-grafico-sectores>
+      </app-card>     
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="( cardLayout | async )?.filtros.cols" [rowspan]="( cardLayout | async )?.filtros.rows">
+      <app-card title="Menú de filtros">
+        <app-menu-filtros></app-menu-filtros>
+      </app-card>     
+    </mat-grid-tile>
+  </mat-grid-list>
