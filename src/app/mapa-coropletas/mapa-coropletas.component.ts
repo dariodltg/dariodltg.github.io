@@ -34,13 +34,9 @@ export class MapaCoropletasComponent implements OnInit {
   updateMap(datos, etiqueta, totalNacional){
     if(this.primera){
         this.primera=false;
-        console.log(this.primera);
     }else{
         console.log(this.globus.planet.layers.pop());
-        console.log(this.primera);
     }
-    
-    console.log("ACTUALIZAR MAPA COROPLETAS");
     fetch("/assets/spain-communities.json")
     .then(r => {
         return r.json();
@@ -53,17 +49,22 @@ export class MapaCoropletasComponent implements OnInit {
         });
 
         countries.addTo(this.globus.planet);
-
         var f = data.features;
+        f=f.sort((n1,n2) => {
+            if (n1.properties.cod_ccaa > n2.properties.cod_ccaa) {
+                return 1;
+            }
+            if (n1.properties.cod_ccaa < n2.properties.cod_ccaa) {
+                return -1;
+            }
+            return 0;
+        });
         for (var i = 0; i < f.length; i++) {
             var fi = f[i];
-            //TODO Cuidado con la correspondencia en el orden de las comunidades que aquí cambia
             var valorDato = datos[i];
 
             var colorComunidad = this.ValorToColor(valorDato/totalNacional);
             var stringColorComunidad = "rgba("+colorComunidad[0]+","+colorComunidad[1]+","+colorComunidad[2]+","+colorComunidad[3]+")"
-            console.log(colorComunidad);
-            //console.log(fi);
             countries.add(new og.Entity({
                 'geometry': {
                     'type': fi.geometry.type,
@@ -98,6 +99,7 @@ export class MapaCoropletasComponent implements OnInit {
     const f = chroma.scale(['red', 'green']).mode('hsv');
     var color = chroma(f(weight).toString());
     return color.alpha(0.7).rgba();
-}
+  }
+
 }
 
