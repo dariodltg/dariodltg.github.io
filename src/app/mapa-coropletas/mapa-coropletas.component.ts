@@ -32,11 +32,6 @@ export class MapaCoropletasComponent implements OnInit {
   }
 
   updateMap(datos, etiqueta, totalNacional){
-    //console.log(this.globus.planet.layers.length);
-    //console.log(this.globus.planet.layers[0]);
-    //console.log(this.globus.planet.layers[1]);
-    //this.globus.planet.layers = this.globus.planet.layers.slice[-1];
-
     if(this.primera){
         this.primera=false;
         console.log(this.primera);
@@ -64,17 +59,18 @@ export class MapaCoropletasComponent implements OnInit {
             var fi = f[i];
             //TODO Cuidado con la correspondencia en el orden de las comunidades que aquí cambia
             var valorDato = datos[i];
-            //console.log(valorDato);
-            //console.log(totalNacional);
+
             var colorComunidad = this.ValorToColor(valorDato/totalNacional);
-            //console.log(colorComunidad);
+            var stringColorComunidad = "rgba("+colorComunidad[0]+","+colorComunidad[1]+","+colorComunidad[2]+","+colorComunidad[3]+")"
+            console.log(colorComunidad);
             //console.log(fi);
             countries.add(new og.Entity({
                 'geometry': {
                     'type': fi.geometry.type,
                     'coordinates': fi.geometry.coordinates,
                     'style': {
-                        'fillColor': colorComunidad,
+                        'fillColor': stringColorComunidad,
+                        'lineColor': "rgba(128, 128, 128, 1.0)"
                     },
                 }
             }));
@@ -99,12 +95,9 @@ export class MapaCoropletasComponent implements OnInit {
   }
 
   ValorToColor(weight) {
-    const f = chroma.scale(['#f00', '#0f0']).mode('lrgb');
-    //console.log(f(weight).toString());
+    const f = chroma.scale(['red', 'green']).mode('hsv');
     var color = chroma(f(weight).toString());
-    //console.log(color.hex());
-    color = color;
-    return color.rgba();
+    return color.alpha(0.7).rgba();
 }
 }
 
