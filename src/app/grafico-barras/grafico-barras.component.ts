@@ -34,9 +34,9 @@ export class GraficoBarrasComponent implements OnInit {
   }
 
   updateChart(datos, etiqueta){
-    console.log("ACTUALIZAR GRAFICO BARRAS");
-    console.log(datos);
-    console.log(etiqueta);
+    //console.log("ACTUALIZAR GRAFICO BARRAS");
+    //console.log(datos);
+    //console.log(etiqueta);
     this.graficoBarras.data.datasets[0].data=datos;
     this.graficoBarras.data.datasets[0].label=etiqueta;
     this.graficoBarras.update();

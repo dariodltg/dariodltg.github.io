@@ -3,6 +3,7 @@ import { map } from 'rxjs/operators';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { GraficoSectoresComponent } from '../grafico-sectores/grafico-sectores.component';
 import { GraficoBarrasComponent } from '../grafico-barras/grafico-barras.component';
+import { MapaCoropletasComponent } from '../mapa-coropletas/mapa-coropletas.component';
 
 @Component({
   selector: 'app-dash',
@@ -41,11 +42,15 @@ export class DashComponent {
   @ViewChild(GraficoBarrasComponent)
   private graficoBarras: GraficoBarrasComponent;
 
+  @ViewChild(MapaCoropletasComponent)
+  private mapaCoropletas: MapaCoropletasComponent;
+
   year: string;
   comunidad: string;
   opcion: string;
   etiquetaSectores: string;
   datosSectores = [];
+  totalNacional : number;
   etiquetaBarras : string;
   datosBarras = []; 
   yearList: string[] = ['2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021'];
@@ -54,7 +59,6 @@ export class DashComponent {
     this.year = object.y;
     this.comunidad = object.c;
     this.opcion = object.o;
-    console.log(this.comunidad);
     this.actualizarComponentes();
   }
 
@@ -68,14 +72,12 @@ export class DashComponent {
     for(let i=0; i<this.yearList.length;i++){
       var year= this.yearList[i];
       var url = "/assets/"+year+".csv";
-      console.log(url);
       const response = await fetch(url);
       const datos = await response.text();
       //Quitamos las primeras 7 líneas que son los títulos y el global del país, y la última línea porque está en blanco.  
       const datosPorLinea = datos.split('\n').slice(7);
       var numFilaDeComunidad = this.getNumFilaSegunComunidad(this.comunidad);
       var filaComunidad = datosPorLinea[numFilaDeComunidad];
-      console.log(filaComunidad);
       var columnas = filaComunidad.split(';');
       switch(this.opcion){
         case "Inversión en I+D (%)":{
@@ -100,7 +102,6 @@ export class DashComponent {
         }
       }   
     }
-    console.log(this.datosBarras);
     this.graficoBarras.updateChart(this.datosBarras, this.etiquetaBarras);
   }
 
@@ -117,35 +118,40 @@ export class DashComponent {
     const response = await fetch(url);
     const datos = await response.text();
     //Quitamos las primeras 7 líneas que son los títulos y el global del país, y la última línea porque está en blanco.  
-    const datosPorLinea = datos.split('\n').slice(7); 
+    const datosPorLinea = datos.split('\n').slice(7);
+    var columnasLineaTotalNacional = datos.split('\n')[6].split(';');
     for(let i=0; i<datosPorLinea.length-5;i++){
       var fila = datosPorLinea[i];
       var columnas = fila.split(';');
       switch(this.opcion){
         case "Inversión en I+D (%)":{
           this.etiquetaSectores="Inversión en I+D (% del total nacional)";
+          this.totalNacional = this.stringNumeroESPtoNumber(columnasLineaTotalNacional[2])
           this.datosSectores.push(this.stringNumeroESPtoNumber(columnas[2]));
           break;
         }
         case "Inversión en I+D (Total)":{
           this.etiquetaSectores="Inversión en I+D (Total en miles de euros)";
+          this.totalNacional = this.stringNumeroESPtoNumber(columnasLineaTotalNacional[1])
           this.datosSectores.push(this.stringNumeroESPtoNumber(columnas[1]));
           break;
         }
         case "Total empleados EJC":{
           this.etiquetaSectores="Total empleados EJC";
+          this.totalNacional = this.stringNumeroESPtoNumber(columnasLineaTotalNacional[3])
           this.datosSectores.push(this.stringNumeroESPtoNumber(columnas[3]));
           break;
         }
         case "Total investigadores EJC":{
           this.etiquetaSectores="Total investigadores EJC";
+          this.totalNacional = this.stringNumeroESPtoNumber(columnasLineaTotalNacional[5])
           this.datosSectores.push(this.stringNumeroESPtoNumber(columnas[5]));
           break;
         }
-      }   
+      }
     }
-    console.log(this.datosSectores);
     this.graficoSectores.updateChart(this.datosSectores, this.etiquetaSectores);
+    this.mapaCoropletas.updateMap(this.datosSectores, this.etiquetaSectores, this.totalNacional);
    }
 
    stringNumeroESPtoNumber(str:string){

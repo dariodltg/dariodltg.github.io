@@ -39,9 +39,9 @@ export class GraficoSectoresComponent implements OnInit {
   }
 
   updateChart(datos, etiqueta){
-    console.log("ACTUALIZAR GRAFICO SECTORES");
-    console.log(datos);
-    console.log(etiqueta);
+    //console.log("ACTUALIZAR GRAFICO SECTORES");
+    //console.log(datos);
+    //console.log(etiqueta);
     this.graficoSectores.data.datasets[0].data=datos;
     this.graficoSectores.data.datasets[0].label=etiqueta;
     this.graficoSectores.update();
