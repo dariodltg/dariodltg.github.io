@@ -12,14 +12,17 @@ export class MenuFiltrosComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.actualizarDatos();
   }
-  opciones: string[] = ['Inversión en I+D (%)', 'Inversión en I+D (Total)', 'Total empleados EJC', 'TotalInvestigadoresEJC'];
+  opciones: string[] = ['Inversión en I+D (%)', 'Inversión en I+D (Total)', 'Total empleados EJC', 'Total investigadores EJC'];
   opcionSelected: string = this.opciones[0];
 
-  yearList: string[] = ['2021','2020','2019'];
+  yearList: string[] = ['2021','2020','2019','2018','2017','2016','2015','2014','2013','2012','2011'];
   yearSelected = this.yearList[0];
 
-  comunidadList: string[] = ['Castilla y León','Madrid','Andalucía'];
+  comunidadList: string[] = ['Andalucía','Aragón','Asturias','Baleares','Canarias','Cantabria','Castilla y León',
+  'Castilla La Mancha','Cataluña','Comunidad Valenciana','Extremadura','Galicia','Madrid','Murcia',
+  'Navarra','País Vasco','La Rioja','Ceuta','Melilla'];
   comunidadSelected = this.comunidadList[0];
 
   @Output() actualizar = new EventEmitter<object>(); 

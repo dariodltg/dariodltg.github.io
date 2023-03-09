@@ -2,6 +2,7 @@ import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { GraficoSectoresComponent } from '../grafico-sectores/grafico-sectores.component';
+import { GraficoBarrasComponent } from '../grafico-barras/grafico-barras.component';
 
 @Component({
   selector: 'app-dash',
@@ -37,78 +38,120 @@ export class DashComponent {
   @ViewChild(GraficoSectoresComponent)
   private graficoSectores: GraficoSectoresComponent;
 
+  @ViewChild(GraficoBarrasComponent)
+  private graficoBarras: GraficoBarrasComponent;
+
   year: string;
   comunidad: string;
   opcion: string;
-  etiquetasSectores = [];
+  etiquetaSectores: string;
   datosSectores = [];
-  etiquetasBarras = [];
+  etiquetaBarras : string;
   datosBarras = []; 
+  yearList: string[] = ['2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021'];
 
   recibirCambioOpcion(object){
     this.year = object.y;
     this.comunidad = object.c;
     this.opcion = object.o;
+    console.log(this.comunidad);
     this.actualizarComponentes();
   }
 
   actualizarComponentes(){
-    this.getDatosCsv();
+    this.getDatosCsvSectores();
+    this.getDatosCsvBarras();
   }
 
-  async getDatosCsv() {
-    this.datosSectores = []
-    this.etiquetasSectores = []
-    const url = "/assets/total_sectores_"+this.year+".csv";
-    const response = await fetch(url);
-    const datos = await response.text();
-    //Quitamos las primeras 7 líneas que son los títulos y el global del país, y la última línea porque está en blanco.  
-    const datosPorLinea = datos.split('\r\n').slice(7).filter(line => line.trim() !== ""); 
-    
-    for(let i=0; i<datosPorLinea.length;i=i+6){
+  async getDatosCsvBarras(){
+    this.datosBarras = [];
+    for(let i=0; i<this.yearList.length;i++){
+      var year= this.yearList[i];
+      var url = "/assets/"+year+".csv";
+      console.log(url);
+      const response = await fetch(url);
+      const datos = await response.text();
+      //Quitamos las primeras 7 líneas que son los títulos y el global del país, y la última línea porque está en blanco.  
+      const datosPorLinea = datos.split('\n').slice(7);
+      var numFilaDeComunidad = this.getNumFilaSegunComunidad(this.comunidad);
+      var filaComunidad = datosPorLinea[numFilaDeComunidad];
+      console.log(filaComunidad);
+      var columnas = filaComunidad.split(';');
       switch(this.opcion){
         case "Inversión en I+D (%)":{
-          var fila = datosPorLinea[i+1];
-          const columna = fila.split(';');
-          this.etiquetasSectores.push(columna[1]);
-          this.datosSectores.push(this.stringNumeroESPtoNumber(columna[3]));
+          this.etiquetaBarras="Inversión en I+D (% del total nacional)";
+          this.datosBarras.push(this.stringNumeroESPtoNumber(columnas[2]));
           break;
         }
         case "Inversión en I+D (Total)":{
-          var fila = datosPorLinea[i+0];
-          const columna = fila.split(';');
-          this.etiquetasSectores.push(columna[1]);
-          this.datosSectores.push(this.stringNumeroESPtoNumber(columna[3]));
+          this.etiquetaBarras="Inversión en I+D (Total en miles de euros)";
+          this.datosBarras.push(this.stringNumeroESPtoNumber(columnas[1]));
           break;
         }
         case "Total empleados EJC":{
-          var fila = datosPorLinea[i+2];
-          const columna = fila.split(';');
-          this.etiquetasSectores.push(columna[1]);
-          this.datosSectores.push(this.stringNumeroESPtoNumber(columna[3]));
+          this.etiquetaBarras="Total empleados EJC";
+          this.datosBarras.push(this.stringNumeroESPtoNumber(columnas[3]));
           break;
         }
-        case "TotalInvestigadoresEJC":{
-          var fila = datosPorLinea[i+4];
-          const columna = fila.split(';');
-          this.etiquetasSectores.push(columna[1]);
-          this.datosSectores.push(this.stringNumeroESPtoNumber(columna[3]));
+        case "Total investigadores EJC":{
+          this.etiquetaBarras="Total investigadores EJC";
+          this.datosBarras.push(this.stringNumeroESPtoNumber(columnas[5]));
+          break;
+        }
+      }   
+    }
+    console.log(this.datosBarras);
+    this.graficoBarras.updateChart(this.datosBarras, this.etiquetaBarras);
+  }
+
+  getNumFilaSegunComunidad(comunidad: string){
+    const comunidadList: string[] = ['Andalucía','Aragón','Asturias','Baleares','Canarias','Cantabria','Castilla y León',
+  'Castilla La Mancha','Cataluña','Comunidad Valenciana','Extremadura','Galicia','Madrid','Murcia',
+  'Navarra','País Vasco','La Rioja','Ceuta','Melilla'];
+    return comunidadList.indexOf(comunidad);
+  }
+
+  async getDatosCsvSectores() {
+    this.datosSectores = []
+    const url = "/assets/"+this.year+".csv";
+    const response = await fetch(url);
+    const datos = await response.text();
+    //Quitamos las primeras 7 líneas que son los títulos y el global del país, y la última línea porque está en blanco.  
+    const datosPorLinea = datos.split('\n').slice(7); 
+    for(let i=0; i<datosPorLinea.length-5;i++){
+      var fila = datosPorLinea[i];
+      var columnas = fila.split(';');
+      switch(this.opcion){
+        case "Inversión en I+D (%)":{
+          this.etiquetaSectores="Inversión en I+D (% del total nacional)";
+          this.datosSectores.push(this.stringNumeroESPtoNumber(columnas[2]));
+          break;
+        }
+        case "Inversión en I+D (Total)":{
+          this.etiquetaSectores="Inversión en I+D (Total en miles de euros)";
+          this.datosSectores.push(this.stringNumeroESPtoNumber(columnas[1]));
+          break;
+        }
+        case "Total empleados EJC":{
+          this.etiquetaSectores="Total empleados EJC";
+          this.datosSectores.push(this.stringNumeroESPtoNumber(columnas[3]));
+          break;
+        }
+        case "Total investigadores EJC":{
+          this.etiquetaSectores="Total investigadores EJC";
+          this.datosSectores.push(this.stringNumeroESPtoNumber(columnas[5]));
           break;
         }
       }   
     }
     console.log(this.datosSectores);
-    console.log(this.etiquetasSectores);
-    this.graficoSectores.updateChart(this.datosSectores, this.etiquetasSectores);
+    this.graficoSectores.updateChart(this.datosSectores, this.etiquetaSectores);
    }
 
    stringNumeroESPtoNumber(str:string){
     var cadena = str.replace(/\./g,'');
-    console.log(cadena);
     cadena = cadena.replace(/,/g,'.');
-    console.log(cadena);
     var numero: number = Number(cadena);
-    console.log(numero);
     return numero;
    }
 }

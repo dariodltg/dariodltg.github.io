@@ -18,31 +18,28 @@ export class GraficoBarrasComponent implements OnInit {
   createChart(){
   
     this.graficoBarras = new Chart("graficoBarras", {
-      type: 'bar', //this denotes tha type of chart
+      type: 'line', //this denotes tha type of chart
 
       data: {// values on X-Axis
-        labels: ['2022-05-10', '2022-05-11', '2022-05-12','2022-05-13',
-								 '2022-05-14', '2022-05-15', '2022-05-16','2022-05-17', ], 
+        labels: ['2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021'], 
 	       datasets: [
           {
-            label: "Sales",
-            data: ['467','576', '572', '79', '92',
-								 '574', '573', '576'],
-            backgroundColor: 'blue'
-          },
-          {
-            label: "Profit",
-            data: ['542', '542', '536', '327', '17',
-									 '0.00', '538', '541'],
-            backgroundColor: 'limegreen'
-          }  
+            label: "Prueba",
+            data: [],
+            backgroundColor: 'orange'
+          }
         ]
-      },
-      options: {
-        aspectRatio:2.5
-      }
-      
+      }     
     });
+  }
+
+  updateChart(datos, etiqueta){
+    console.log("ACTUALIZAR GRAFICO BARRAS");
+    console.log(datos);
+    console.log(etiqueta);
+    this.graficoBarras.data.datasets[0].data=datos;
+    this.graficoBarras.data.datasets[0].label=etiqueta;
+    this.graficoBarras.update();
   }
 
 }

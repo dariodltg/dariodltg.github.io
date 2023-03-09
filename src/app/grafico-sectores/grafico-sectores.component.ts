@@ -15,17 +15,22 @@ export class GraficoSectoresComponent implements OnInit {
     this.createChart();
   }
 
+  listaColores = ["red","yellow","blue","lime","fuchsia","aqua","crimson","olive","darkorange","mediumorchid","tomato","seagreen","sienna","pink","grey","darkviolet","azure","black"];
+
   createChart(){
   
     this.graficoSectores = new Chart("graficoSectores", {
       type: 'pie', //this denotes tha type of chart
 
       data: {// values on X-Axis
-        labels: [], 
+        labels: ['Andalucía','Aragón','Asturias','Baleares','Canarias','Cantabria','Castilla y León',
+        'Castilla La Mancha','Cataluña','Comunidad Valenciana','Extremadura','Galicia','Madrid','Murcia',
+        'Navarra','País Vasco','La Rioja','Ceuta','Melilla'], 
 	       datasets: [
           {
             label: "Prueba",
             data: [],
+            backgroundColor: this.listaColores
           }, 
         ]
       },
@@ -33,25 +38,13 @@ export class GraficoSectoresComponent implements OnInit {
     });
   }
 
-  updateChart(datos, etiquetas){
+  updateChart(datos, etiqueta){
     console.log("ACTUALIZAR GRAFICO SECTORES");
     console.log(datos);
-    console.log(etiquetas);
-    var colors = [];
-    for(let i=0; i< datos.length; i++){
-      var color = this.selectColor(datos.length);
-      colors.push(color);
-    }
-    console.log(colors);
+    console.log(etiqueta);
     this.graficoSectores.data.datasets[0].data=datos;
-    this.graficoSectores.data.labels=etiquetas;
-    //this.graficoSectores.data.datasets[0].backgroundColor= colors;
+    this.graficoSectores.data.datasets[0].label=etiqueta;
     this.graficoSectores.update();
-  }
-
-  selectColor(number) {
-    const hue = number * 137.508; // use golden angle approximation
-    return `hsl(${hue},50%,75%)`;
   }
 
 }
