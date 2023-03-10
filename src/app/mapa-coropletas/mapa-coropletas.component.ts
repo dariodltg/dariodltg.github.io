@@ -29,7 +29,8 @@ export class MapaCoropletasComponent implements OnInit {
       layers: [this.osm],
       autoActivated: true
     });
-    this.globus.planet.flyLonLat(new og.LonLat(0, 37, 3000000));    
+    this.globus.planet.flyLonLat(new og.LonLat(0, 37, 3000000));
+    //document.getElementById("globus").style.height = "";
   }
 
   @Output() clickComunidad = new EventEmitter<object>(); 
