@@ -4,7 +4,7 @@ import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { GraficoSectoresComponent } from '../grafico-sectores/grafico-sectores.component';
 import { GraficoBarrasComponent } from '../grafico-barras/grafico-barras.component';
 import { MapaCoropletasComponent } from '../mapa-coropletas/mapa-coropletas.component';
-
+import { MenuFiltrosComponent } from '../menu-filtros/menu-filtros.component';
 @Component({
   selector: 'app-dash',
   templateUrl: './dash.component.html',
@@ -44,10 +44,15 @@ export class DashComponent {
 
   @ViewChild(MapaCoropletasComponent)
   private mapaCoropletas: MapaCoropletasComponent;
+  
+  @ViewChild(MenuFiltrosComponent)
+  private menuFiltros: MenuFiltrosComponent;
 
-  year: string;
-  comunidad: string;
-  opcion: string;
+  primera : boolean = true;
+
+  year: string ="";
+  comunidad: string="";
+  opcion: string="";
   etiquetaSectores: string;
   datosSectores = [];
   totalNacional : number;
@@ -56,15 +61,31 @@ export class DashComponent {
   yearList: string[] = ['2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021'];
 
   recibirCambioOpcion(object){
-    this.year = object.y;
-    this.comunidad = object.c;
-    this.opcion = object.o;
-    this.actualizarComponentes();
+    if(this.primera){
+      this.primera=false;
+      this.opcion = object.o;
+      this.year = object.y;
+      this.comunidad = object.c;
+      this.getDatosCsvSectores();
+      this.getDatosCsvBarras();
+    }else{
+      if(this.opcion != object.o){
+        this.opcion = object.o;
+        this.getDatosCsvSectores();
+        this.getDatosCsvBarras();
+      }else if(this.year != object.y){
+        this.year = object.y;
+        this.getDatosCsvSectores();
+      }else if(this.comunidad != object.c){
+        this.comunidad = object.c;
+        this.getDatosCsvBarras();
+      } 
+    } 
   }
 
-  actualizarComponentes(){
-    this.getDatosCsvSectores();
-    this.getDatosCsvBarras();
+  recibirClickComunidad(object){
+    var idComunidad = object.id;
+    this.menuFiltros.cambioComunidadPorMapa(idComunidad);
   }
 
   async getDatosCsvBarras(){

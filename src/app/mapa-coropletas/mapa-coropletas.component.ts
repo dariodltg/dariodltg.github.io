@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import * as og from "@openglobus/og";
 import * as chroma from "chroma-js";
 
@@ -10,10 +10,11 @@ import * as chroma from "chroma-js";
 export class MapaCoropletasComponent implements OnInit {
 
   constructor() { }
-
+  
   osm;
   globus;
   primera : boolean = true;
+  idComunidad: number;
 
   ngOnInit() {
     this.osm = new og.layer.XYZ('OpenStreetMap', {
@@ -31,11 +32,13 @@ export class MapaCoropletasComponent implements OnInit {
     this.globus.planet.flyLonLat(new og.LonLat(0, 37, 3000000));    
   }
 
+  @Output() clickComunidad = new EventEmitter<object>(); 
+
   updateMap(datos, etiqueta, totalNacional){
     if(this.primera){
         this.primera=false;
     }else{
-        console.log(this.globus.planet.layers.pop());
+        this.globus.planet.layers.pop();
     }
     fetch("/assets/spain-communities.json")
     .then(r => {
@@ -84,15 +87,19 @@ export class MapaCoropletasComponent implements OnInit {
             e.pickingObject.geometry.bringToFront();
             e.pickingObject.geometry.setLineColor(0, 0, 0, 1.0);
         });
-        countries.events.on("lclick", function (e) {
+        countries.events.on("lclick",(e) => {
             //globus.planet.flyExtent(e.pickingObject.geometry.getExtent());
-            //TODO Seleccionar comunidad mediante click
-            console.log(e.pickingObject.id);
+            this.idComunidad = e.pickingObject.id%19; //Módulo porque los ids de las geometries no paran de incrementarse
+            this.clickComunidad.emit({id: this.idComunidad});
         });
         countries.events.on("touchstart", function (e) {
             this.globus.planet.flyExtent(e.pickingObject.geometry.getExtent());
         });
     });    
+  }
+
+  EmitirEvento(){
+    this.clickComunidad.emit({id: this.idComunidad});
   }
 
   ValorToColor(weight) {

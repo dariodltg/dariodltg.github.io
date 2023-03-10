@@ -9,6 +9,8 @@ import { MatSelectChange } from '@angular/material/select';
 })
 export class MenuFiltrosComponent implements OnInit {
 
+  
+
   constructor() { }
 
   ngOnInit(): void {
@@ -40,6 +42,12 @@ export class MenuFiltrosComponent implements OnInit {
 
   comunidadChange(change: MatSelectChange) {
     console.log(change.value);
+    this.actualizarDatos();
+  }
+
+  cambioComunidadPorMapa(idComunidad: number) {
+    var nombreComunidad = this.comunidadList[idComunidad];
+    this.comunidadSelected = nombreComunidad;
     this.actualizarDatos();
   }
 

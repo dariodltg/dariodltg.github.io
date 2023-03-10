@@ -15,7 +15,7 @@ export class GraficoSectoresComponent implements OnInit {
     this.createChart();
   }
 
-  listaColores = ["red","yellow","blue","lime","fuchsia","aqua","crimson","olive","darkorange","mediumorchid","tomato","seagreen","sienna","pink","grey","darkviolet","azure","black"];
+  listaColores = ["red","yellow","blue","lime","fuchsia","aqua","crimson","olive","darkorange","mediumorchid","tomato","seagreen","sienna","pink","grey","darkviolet","azure","black","green"];
 
   createChart(){
   
