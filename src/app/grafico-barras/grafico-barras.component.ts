@@ -29,7 +29,19 @@ export class GraficoBarrasComponent implements OnInit {
             backgroundColor: 'orange'
           }
         ]
-      }     
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Chart.js Line Chart'
+          }
+        }
+      },     
     });
   }
 

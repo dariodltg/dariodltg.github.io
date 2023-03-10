@@ -5,17 +5,17 @@
       </app-card>     
     </mat-grid-tile>
     <mat-grid-tile [colspan]="( cardLayout | async )?.barras.cols" [rowspan]="( cardLayout | async )?.barras.rows">
-      <app-card title="Gráfico de barras">
+      <app-card>
         <app-grafico-barras></app-grafico-barras>
       </app-card>     
     </mat-grid-tile>
     <mat-grid-tile [colspan]="( cardLayout | async )?.sectores.cols" [rowspan]="( cardLayout | async )?.sectores.rows">
-      <app-card title="Gráfico de sectores">
+      <app-card>
         <app-grafico-sectores ></app-grafico-sectores>
       </app-card>     
     </mat-grid-tile>
     <mat-grid-tile [colspan]="( cardLayout | async )?.filtros.cols" [rowspan]="( cardLayout | async )?.filtros.rows">
-      <app-card title="Menú de filtros">
+      <app-card>
         <app-menu-filtros (actualizar)="recibirCambioOpcion($event)"></app-menu-filtros>
       </app-card>     
     </mat-grid-tile>

@@ -31,8 +31,21 @@ export class GraficoSectoresComponent implements OnInit {
             label: "Prueba",
             data: [],
             backgroundColor: this.listaColores
-          }, 
+          },
+
         ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'right',
+          },
+          title: {
+            display: true,
+            text: 'Chart.js Pie Chart'
+          }
+        }
       },
       
     });
