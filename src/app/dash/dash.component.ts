@@ -123,7 +123,7 @@ export class DashComponent {
         }
       }   
     }
-    this.graficoBarras.updateChart(this.datosBarras, this.etiquetaBarras);
+    this.graficoBarras.updateChart(this.datosBarras, this.etiquetaBarras, this.comunidad);
   }
 
   getNumFilaSegunComunidad(comunidad: string){
@@ -171,7 +171,7 @@ export class DashComponent {
         }
       }
     }
-    this.graficoSectores.updateChart(this.datosSectores, this.etiquetaSectores);
+    this.graficoSectores.updateChart(this.datosSectores, this.etiquetaSectores, this.year);
     this.mapaCoropletas.updateMap(this.datosSectores, this.etiquetaSectores, this.totalNacional);
    }
 

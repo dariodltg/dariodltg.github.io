@@ -26,7 +26,8 @@ export class GraficoBarrasComponent implements OnInit {
           {
             label: "Prueba",
             data: [],
-            backgroundColor: 'orange'
+            backgroundColor: 'orange',
+            borderColor:'rgba(50,50,50,0.8)',
           }
         ]
       },
@@ -38,19 +39,25 @@ export class GraficoBarrasComponent implements OnInit {
           },
           title: {
             display: true,
-            text: 'Chart.js Line Chart'
+            text: 'Evolución histórica de '
+          }
+        },
+        scales:{
+          y:{
+            min:0,
           }
         }
       },     
     });
   }
 
-  updateChart(datos, etiqueta){
+  updateChart(datos, etiqueta, comunidad){
     //console.log("ACTUALIZAR GRAFICO BARRAS");
     //console.log(datos);
     //console.log(etiqueta);
     this.graficoBarras.data.datasets[0].data=datos;
     this.graficoBarras.data.datasets[0].label=etiqueta;
+    this.graficoBarras.config.options.plugins.title.text = "Evolución histórica de "+comunidad;
     this.graficoBarras.update();
   }
 
