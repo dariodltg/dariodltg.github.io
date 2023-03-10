@@ -30,7 +30,6 @@ export class MapaCoropletasComponent implements OnInit {
       autoActivated: true
     });
     this.globus.planet.flyLonLat(new og.LonLat(0, 37, 3000000));
-    //document.getElementById("globus").style.height = "";
   }
 
   @Output() clickComunidad = new EventEmitter<object>(); 
@@ -45,14 +44,13 @@ export class MapaCoropletasComponent implements OnInit {
     .then(r => {
         return r.json();
     }).then(data => {
-        var countries = new og.layer.Vector("Comunidades", {
+        var comunidades = new og.layer.Vector("Comunidades", {
             'visibility': true,
             'isBaseLayer': false,
             'diffuse': [0, 0, 0],
-            'ambient': [1, 1, 1]
+            'ambient': [1, 1, 1],
         });
-
-        countries.addTo(this.globus.planet);
+        comunidades.addTo(this.globus.planet);
         var f = data.features;
         f=f.sort((n1,n2) => {
             if (n1.properties.cod_ccaa > n2.properties.cod_ccaa) {
@@ -69,7 +67,7 @@ export class MapaCoropletasComponent implements OnInit {
 
             var colorComunidad = this.ValorToColor(valorDato/totalNacional);
             var stringColorComunidad = "rgba("+colorComunidad[0]+","+colorComunidad[1]+","+colorComunidad[2]+","+colorComunidad[3]+")"
-            countries.add(new og.Entity({
+            comunidades.add(new og.Entity({
                 'geometry': {
                     'type': fi.geometry.type,
                     'coordinates': fi.geometry.coordinates,
@@ -81,19 +79,19 @@ export class MapaCoropletasComponent implements OnInit {
             }));
         }
 
-        countries.events.on("mouseleave", function (e) {
+        comunidades.events.on("mouseleave", function (e) {
             e.pickingObject.geometry.setLineColor(0.5, 0.5, 0.5, 1.0);
         });
-        countries.events.on("mouseenter", function (e) {
+        comunidades.events.on("mouseenter", function (e) {
             e.pickingObject.geometry.bringToFront();
             e.pickingObject.geometry.setLineColor(0, 0, 0, 1.0);
         });
-        countries.events.on("lclick",(e) => {
+        comunidades.events.on("lclick",(e) => {
             //globus.planet.flyExtent(e.pickingObject.geometry.getExtent());
             this.idComunidad = e.pickingObject.id%19; //Módulo porque los ids de las geometries no paran de incrementarse
             this.clickComunidad.emit({id: this.idComunidad});
         });
-        countries.events.on("touchstart", function (e) {
+        comunidades.events.on("touchstart", function (e) {
             this.globus.planet.flyExtent(e.pickingObject.geometry.getExtent());
         });
     });    
