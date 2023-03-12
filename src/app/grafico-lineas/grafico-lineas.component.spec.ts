@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GraficoBarrasComponent } from './grafico-barras.component';
+import { GraficoLineasComponent } from './grafico-lineas.component';
 
-describe('GraficoBarrasComponent', () => {
-  let component: GraficoBarrasComponent;
-  let fixture: ComponentFixture<GraficoBarrasComponent>;
+describe('GraficoLineasComponent', () => {
+  let component: GraficoLineasComponent;
+  let fixture: ComponentFixture<GraficoLineasComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ GraficoBarrasComponent ]
+      declarations: [ GraficoLineasComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GraficoBarrasComponent);
+    fixture = TestBed.createComponent(GraficoLineasComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

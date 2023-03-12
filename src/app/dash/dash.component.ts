@@ -2,7 +2,7 @@ import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { GraficoSectoresComponent } from '../grafico-sectores/grafico-sectores.component';
-import { GraficoBarrasComponent } from '../grafico-barras/grafico-barras.component';
+import { GraficoLineasComponent } from '../grafico-lineas/grafico-lineas.component';
 import { MapaCoropletasComponent } from '../mapa-coropletas/mapa-coropletas.component';
 import { MenuFiltrosComponent } from '../menu-filtros/menu-filtros.component';
 @Component({
@@ -18,7 +18,7 @@ export class DashComponent {
         return {
           columns: 3,
           mapa:{cols:2, rows:5},
-          barras:{cols:1, rows:2},
+          lineas:{cols:1, rows:2},
           sectores:{cols:1, rows:2},
           filtros:{cols:1, rows:1},
         };
@@ -27,7 +27,7 @@ export class DashComponent {
       return {
         columns: 2,
         mapa:{cols:2, rows:5},
-        barras:{cols:1, rows:2},
+        lineas:{cols:1, rows:2},
         sectores:{cols:1, rows:2},
         filtros:{cols:1, rows:1},
       };
@@ -39,8 +39,8 @@ export class DashComponent {
   @ViewChild(GraficoSectoresComponent)
   private graficoSectores: GraficoSectoresComponent;
 
-  @ViewChild(GraficoBarrasComponent)
-  private graficoBarras: GraficoBarrasComponent;
+  @ViewChild(GraficoLineasComponent)
+  private graficoBarras: GraficoLineasComponent;
 
   @ViewChild(MapaCoropletasComponent)
   private mapaCoropletas: MapaCoropletasComponent;

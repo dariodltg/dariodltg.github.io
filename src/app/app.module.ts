@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MapaCoropletasComponent } from './mapa-coropletas/mapa-coropletas.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { GraficoBarrasComponent } from './grafico-barras/grafico-barras.component';
+import { GraficoLineasComponent } from './grafico-lineas/grafico-lineas.component';
 import { GraficoSectoresComponent } from './grafico-sectores/grafico-sectores.component';
 import { MenuFiltrosComponent } from './menu-filtros/menu-filtros.component';
 import { MatRadioModule } from '@angular/material/radio';
@@ -26,7 +26,7 @@ import {MatSelectModule} from '@angular/material/select';
   declarations: [
     AppComponent,
     MapaCoropletasComponent,
-    GraficoBarrasComponent,
+    GraficoLineasComponent,
     GraficoSectoresComponent,
     MenuFiltrosComponent,
     DashComponent,
