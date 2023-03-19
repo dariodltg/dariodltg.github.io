@@ -1,1 +1,20 @@
 <div class="globusContainer" id="globus" ></div>
+    <div style="display:inline-block;margin-right:30px;
+     margin-top: 10px;
+     font-size: x-large;
+      font-weight: 700;
+       text-align: left;
+        " >{{tituloMapa}}</div>
+    <div class="gradient" style="width: 400px; display:inline-block;">
+        <span class="grad-step" [style.background]="colorMin"> </span>
+        <span class="grad-step" [style.background]="colorPrimerCuartil"> </span>
+        <span class="grad-step" [style.background]="colorMed"> </span>
+        <span class="grad-step" [style.background]="colorTercerCuartil"> </span>
+        <span class="grad-step" [style.background]="colorMax"> </span>
+        <span class="domain-min">{{intervaloMin}}</span>
+        <span class="domain-1cuartil">{{intervaloPrimerCuartil}}</span>
+        <span class="domain-med">{{intervaloMed}}</span>
+        <span class="domain-3cuartil">{{intervaloTercerCuartil}}</span>
+        <span class="domain-max">{{intervaloMax}}</span>
+    </div>
+

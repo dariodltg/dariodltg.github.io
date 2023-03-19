@@ -167,7 +167,8 @@ export class DashComponent {
           }
           break;
         }        
-      } 
+      }
+      datoNumerico = Math.round(datoNumerico*1000)/1000;
       this.datosLineas.push(datoNumerico); //Añadimos el dato para el gráfico de líneas
     }
     this.graficoBarras.updateChart(this.datosLineas, this.etiquetaLineas, this.comunidad);
@@ -176,6 +177,7 @@ export class DashComponent {
   async getDatosCsvSectores() {
     this.datosSectores = []
     await this.getDatosCsvPoblacionSectores();
+    console.log(this.datosPoblacionSectores);
     const url = "/assets/"+this.year+".csv";
     const response = await fetch(url);
     const datos = await response.text();
@@ -225,6 +227,8 @@ export class DashComponent {
           datoNumerico = this.stringNumeroESPtoNumber(columnas[5])
           if(this.opcionSecundaria == "% sobre la población"){
             datoNumerico = (datoNumerico/this.datosPoblacionSectores[i])*100
+            
+            console.log(datoNumerico);
             this.totalNacional=100;
           }
           break;
@@ -240,6 +244,7 @@ export class DashComponent {
           break;
         }
       }
+      datoNumerico = Math.round(datoNumerico*1000)/1000; //Añadimos el dato para el gráfico de sectores y el mapa
       this.datosSectores.push(datoNumerico);
     }
     this.mapaCoropletas.updateMap(this.datosSectores, this.etiquetaSectores, this.totalNacional);
@@ -254,9 +259,10 @@ export class DashComponent {
     //Quitamos las primeras 7 líneas que son los títulos y el global del país, y la última línea porque está en blanco.  
     const datosPorLinea = datos.split('\n').slice(7);
     var columnaPoblacionYear = this.yearList.reverse().indexOf(this.year) + 1;
-    for(let i=0; i<datosPorLinea.length-5;i++){
+    for(let i=0; i<=datosPorLinea.length-5;i++){
       var columnas = datosPorLinea[i].split(';');
       var datoNumericoPoblacion = this.stringNumeroESPtoNumber(columnas[columnaPoblacionYear]);
+      console.log(datoNumericoPoblacion);
       this.datosPoblacionSectores.push(datoNumericoPoblacion);
     }
   }

@@ -1,7 +1,59 @@
 .globusContainer{
-    height: 95vh;
+    height: 90vh;
     display: flex;
     flex-direction: column;
     align-items: stretch;
     justify-content: stretch;
+}
+
+.gradient {
+    width: 85%;
+    white-space: nowrap;
+    position: relative;
+    display: inline-block;
+    top: 4px;
+    padding-bottom: 15px;
+}
+
+.gradient .domain-min {
+    position: absolute;
+    left: 0;
+    font-size: 11px;
+    bottom: 3px;
+}
+
+.gradient .domain-1cuartil {
+    position: absolute;
+    left: 25%;
+    text-align: center;
+    font-size: 11px;
+    bottom: 3px;
+}
+
+.gradient .domain-med {
+    position: absolute;
+    right: 25%;
+    left: 25%;
+    text-align: center;
+    font-size: 11px;
+    bottom: 3px;
+}
+.gradient .domain-3cuartil {
+    position: absolute;
+    right: 25%;
+    text-align: center;
+    font-size: 11px;
+    bottom: 3px;
+}
+.gradient .domain-max {
+    position: absolute;
+    right: 0;
+    font-size: 11px;
+    bottom: 3px;
+}
+
+.grad-step {
+    display: inline-block;
+    height: 20px;
+    width: 20%;
 }

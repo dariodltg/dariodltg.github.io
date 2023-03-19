@@ -18,6 +18,18 @@ export class MapaCoropletasComponent implements OnInit {
   primera : boolean = true;
   idComunidad: number;
   miPopUp;
+  tituloMapa = "Mapa de coropletas de:";
+  colorMin = "red";
+  colorPrimerCuartil = "yellow";
+  colorMed = "orange";
+  colorTercerCuartil = "pink"
+  colorMax = "red"
+
+  intervaloMin = 0;
+  intervaloPrimerCuartil = 0.25;
+  intervaloMed = 0.5;
+  intervaloTercerCuartil = 0.75;
+  intervaloMax = 1;
   
   ngOnInit() {
     this.osm = new og.layer.XYZ('OpenStreetMap', {
@@ -26,11 +38,12 @@ export class MapaCoropletasComponent implements OnInit {
       visibility: true,
     });
     this.globus = new og.Globe({
-      target: 'globus', // a HTMLDivElement which its id is `globus`
+      target: 'globus',
       name: 'Earth',
       terrain: new og.terrain.GlobusTerrain(),
       layers: [this.osm],
-      autoActivated: true
+      autoActivated: true,
+      
     });
     this.globus.planet.flyLonLat(new og.LonLat(0, 37, 3000000));
     this.miPopUp = new og.Popup({
@@ -39,7 +52,6 @@ export class MapaCoropletasComponent implements OnInit {
       visibility: false
     })
   }
-
   
   @Output() clickComunidad = new EventEmitter<object>(); 
 
@@ -71,10 +83,10 @@ export class MapaCoropletasComponent implements OnInit {
             }
             return 0;
         });
+        var valorMaximo = Math.max(...datos);
         for (var i = 0; i < f.length; i++) {
             var fi = f[i];
             var valorDato = datos[i];
-            var valorMaximo = Math.max(...datos);
             var colorComunidad = this.ValorToColor(valorDato/valorMaximo);
             var stringColorComunidad = "rgba("+colorComunidad[0]+","+colorComunidad[1]+","+colorComunidad[2]+","+colorComunidad[3]+")"
             comunidades.add(new og.Entity({
@@ -88,9 +100,22 @@ export class MapaCoropletasComponent implements OnInit {
                 }
             }));
         }
-
-        
-
+        this.tituloMapa = "Mapa de coropletas de "+etiqueta;
+        this.intervaloMin = 0;
+        this.intervaloPrimerCuartil = Math.round((valorMaximo/4)*100)/100;
+        this.intervaloMed = Math.round((valorMaximo/2)*100)/100;
+        this.intervaloTercerCuartil = Math.round((valorMaximo*3/4)*100)/100;
+        this.intervaloMax = Math.round((valorMaximo)*100)/100;
+        var color1 = this.ValorToColor(this.intervaloMin/valorMaximo);
+        this.colorMin = "rgba("+color1[0]+","+color1[1]+","+color1[2]+","+color1[3]+")";
+        var color2 = this.ValorToColor(this.intervaloPrimerCuartil/valorMaximo);
+        this.colorPrimerCuartil = "rgba("+color2[0]+","+color2[1]+","+color2[2]+","+color2[3]+")";
+        var color3 = this.ValorToColor(this.intervaloMed/valorMaximo);
+        this.colorMed = "rgba("+color3[0]+","+color3[1]+","+color3[2]+","+color2[3]+")";
+        var color4 = this.ValorToColor(this.intervaloTercerCuartil/valorMaximo);
+        this.colorTercerCuartil = "rgba("+color4[0]+","+color4[1]+","+color4[2]+","+color4[3]+")";
+        var color5 = this.ValorToColor(this.intervaloMax/valorMaximo);
+        this.colorMax = "rgba("+color5[0]+","+color5[1]+","+color5[2]+","+color5[3]+")";
         comunidades.events.on("mouseleave", function (e) {
             e.pickingObject.geometry.setLineColor(0.5, 0.5, 0.5, 1.0);
         });
