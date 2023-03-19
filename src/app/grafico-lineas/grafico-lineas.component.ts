@@ -39,7 +39,13 @@ export class GraficoLineasComponent implements OnInit {
           },
           title: {
             display: true,
-            text: 'Evolución histórica de '
+            text: 'Evolución histórica de ',
+            font: {
+              size: 15,
+              style: 'normal',
+              lineHeight: 1.2
+            },
+            color: "black",
           }
         },
         scales:{

@@ -10,12 +10,15 @@ import * as chroma from "chroma-js";
 export class MapaCoropletasComponent implements OnInit {
 
   constructor() { }
-  
+  comunidadList: string[] = ['Andalucía','Aragón','Asturias','Baleares','Canarias','Cantabria','Castilla y León',
+  'Castilla La Mancha','Cataluña','Comunidad Valenciana','Extremadura','Galicia','Madrid','Murcia',
+  'Navarra','País Vasco','La Rioja','Ceuta','Melilla'];
   osm;
   globus;
   primera : boolean = true;
   idComunidad: number;
-
+  miPopUp;
+  
   ngOnInit() {
     this.osm = new og.layer.XYZ('OpenStreetMap', {
       isBaseLayer: true,
@@ -30,11 +33,18 @@ export class MapaCoropletasComponent implements OnInit {
       autoActivated: true
     });
     this.globus.planet.flyLonLat(new og.LonLat(0, 37, 3000000));
+    this.miPopUp = new og.Popup({
+      planet: this.globus.planet,
+      offset:[0,-25],
+      visibility: false
+    })
   }
 
+  
   @Output() clickComunidad = new EventEmitter<object>(); 
 
   updateMap(datos, etiqueta, totalNacional){
+    this.miPopUp.setVisibility(false);
     if(this.primera){
         this.primera=false;
     }else{
@@ -64,8 +74,8 @@ export class MapaCoropletasComponent implements OnInit {
         for (var i = 0; i < f.length; i++) {
             var fi = f[i];
             var valorDato = datos[i];
-
-            var colorComunidad = this.ValorToColor(valorDato/totalNacional);
+            var valorMaximo = Math.max(...datos);
+            var colorComunidad = this.ValorToColor(valorDato/valorMaximo);
             var stringColorComunidad = "rgba("+colorComunidad[0]+","+colorComunidad[1]+","+colorComunidad[2]+","+colorComunidad[3]+")"
             comunidades.add(new og.Entity({
                 'geometry': {
@@ -79,17 +89,27 @@ export class MapaCoropletasComponent implements OnInit {
             }));
         }
 
+        
+
         comunidades.events.on("mouseleave", function (e) {
             e.pickingObject.geometry.setLineColor(0.5, 0.5, 0.5, 1.0);
         });
         comunidades.events.on("mouseenter", function (e) {
+            
             e.pickingObject.geometry.bringToFront();
             e.pickingObject.geometry.setLineColor(0, 0, 0, 1.0);
+            
         });
         comunidades.events.on("lclick",(e) => {
-            //globus.planet.flyExtent(e.pickingObject.geometry.getExtent());
-            this.idComunidad = e.pickingObject.id%19; //Módulo porque los ids de las geometries no paran de incrementarse
-            this.clickComunidad.emit({id: this.idComunidad});
+          //globus.planet.flyExtent(e.pickingObject.geometry.getExtent());
+          this.idComunidad = e.pickingObject.id%19; //Módulo porque los ids de las geometries no paran de incrementarse
+          this.clickComunidad.emit({id: this.idComunidad});
+          var nombreComunidad = this.comunidadList[this.idComunidad];
+          var contenidoPopup = nombreComunidad+ "<br/>"+ etiqueta + ": <br/>" + datos[this.idComunidad]
+          this.miPopUp.setContent(contenidoPopup);
+          let groundPos = this.globus.planet.getCartesianFromMouseTerrain();
+          this.miPopUp.setCartesian3v(groundPos);
+          this.miPopUp.setVisibility(true);
         });
         comunidades.events.on("touchstart", function (e) {
             this.globus.planet.flyExtent(e.pickingObject.geometry.getExtent());

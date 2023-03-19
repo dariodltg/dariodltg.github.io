@@ -242,8 +242,8 @@ export class DashComponent {
       }
       this.datosSectores.push(datoNumerico);
     }
-    this.graficoSectores.updateChart(this.datosSectores, this.etiquetaSectores, this.year);
     this.mapaCoropletas.updateMap(this.datosSectores, this.etiquetaSectores, this.totalNacional);
+    this.graficoSectores.updateChart(this.datosSectores, this.etiquetaSectores, this.year, this.totalNacional);
    }
 
   async getDatosCsvPoblacionSectores() {
