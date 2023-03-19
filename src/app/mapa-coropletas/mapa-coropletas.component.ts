@@ -43,7 +43,6 @@ export class MapaCoropletasComponent implements OnInit {
       terrain: new og.terrain.GlobusTerrain(),
       layers: [this.osm],
       autoActivated: true,
-      
     });
     this.globus.planet.flyLonLat(new og.LonLat(0, 37, 3000000));
     this.miPopUp = new og.Popup({
@@ -51,6 +50,8 @@ export class MapaCoropletasComponent implements OnInit {
       offset:[0,-25],
       visibility: false
     })
+    this.globus.planet.renderer.backgroundColor.set(0, 0, 0, 1.0);
+
   }
   
   @Output() clickComunidad = new EventEmitter<object>(); 
