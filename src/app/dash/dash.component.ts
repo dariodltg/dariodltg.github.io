@@ -18,8 +18,8 @@ export class DashComponent {
         return {
           columns: 3,
           mapa:{cols:2, rows:5},
-          lineas:{cols:1, rows:2},
           sectores:{cols:1, rows:2},
+          lineas:{cols:1, rows:2},
           filtros:{cols:1, rows:1},
         };
       }
@@ -27,8 +27,8 @@ export class DashComponent {
       return {
         columns: 2,
         mapa:{cols:2, rows:5},
-        lineas:{cols:1, rows:2},
         sectores:{cols:1, rows:2},
+        lineas:{cols:1, rows:2},
         filtros:{cols:1, rows:1},
       };
     })

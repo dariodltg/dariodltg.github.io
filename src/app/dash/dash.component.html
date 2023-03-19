@@ -4,14 +4,14 @@
         <app-mapa-coropletas (clickComunidad)="recibirClickComunidad($event)"></app-mapa-coropletas>
       </app-card>     
     </mat-grid-tile>
-    <mat-grid-tile [colspan]="( cardLayout | async )?.lineas.cols" [rowspan]="( cardLayout | async )?.lineas.rows">
-      <app-card>
-        <app-grafico-lineas></app-grafico-lineas>
-      </app-card>     
-    </mat-grid-tile>
     <mat-grid-tile [colspan]="( cardLayout | async )?.sectores.cols" [rowspan]="( cardLayout | async )?.sectores.rows">
       <app-card>
         <app-grafico-sectores ></app-grafico-sectores>
+      </app-card>     
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="( cardLayout | async )?.lineas.cols" [rowspan]="( cardLayout | async )?.lineas.rows">
+      <app-card>
+        <app-grafico-lineas></app-grafico-lineas>
       </app-card>     
     </mat-grid-tile>
     <mat-grid-tile [colspan]="( cardLayout | async )?.filtros.cols" [rowspan]="( cardLayout | async )?.filtros.rows">
