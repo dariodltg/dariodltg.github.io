@@ -16,8 +16,12 @@ export class MenuFiltrosComponent implements OnInit {
   ngOnInit(): void {
     this.actualizarDatos();
   }
-  opciones: string[] = ['Inversión en I+D (%)', 'Inversión en I+D (Total)', 'Total empleados EJC', 'Total investigadores EJC'];
-  opcionSelected: string = this.opciones[0];
+  opciones1: string[] = ['Inversión en I+D (%)', 'Inversión en I+D (Total)'];
+  opciones2: string[] =['Personal en I+D: Total', 'Personal en I+D: Mujeres', 'Investigadores: Total', 'Investigadores: Mujeres']
+  opcionSelected: string = this.opciones1[0];
+  opcionesSecundariasEnabled:boolean = false;
+  opcionesSecundarias: string[] = ['Valor total', '% sobre la población']
+  opcionSecundariaSelected: string = this.opcionesSecundarias[0];
 
   yearList: string[] = ['2021','2020','2019','2018','2017','2016','2015','2014','2013','2012','2011'];
   yearSelected = this.yearList[0];
@@ -32,6 +36,22 @@ export class MenuFiltrosComponent implements OnInit {
   cambioOpcion($event: MatRadioChange) {
     console.log($event.value);
     this.opcionSelected=$event.value;
+    if(this.opciones1.includes(this.opcionSelected)){
+      this.opcionesSecundariasEnabled = false;
+    }else{
+      this.opcionesSecundariasEnabled = true;
+    }
+    this.actualizarDatos();
+  }
+
+  cambioOpcionSecundaria($event: MatRadioChange) {
+    console.log("Opcion secundaria cambiada: "+$event.value);
+    this.opcionSecundariaSelected=$event.value;
+    if(this.opciones1.includes(this.opcionSelected)){
+      this.opcionesSecundariasEnabled = false;
+    }else{
+      this.opcionesSecundariasEnabled = true;
+    }
     this.actualizarDatos();
   }
 
@@ -55,9 +75,11 @@ export class MenuFiltrosComponent implements OnInit {
     var year = this.yearSelected;
     var comunidad = this.comunidadSelected;
     var opcion = this.opcionSelected;
+    var opcionSecundaria = this.opcionSecundariaSelected;
     console.log(opcion);
     console.log(year);
     console.log(comunidad);
-    this.actualizar.emit({y: year, c: comunidad, o:opcion})
+    console.log(opcionSecundaria);
+    this.actualizar.emit({y: year, c: comunidad, o:opcion, o2:this.opcionSecundariaSelected})
   }
 }

@@ -1,15 +1,34 @@
-<div class="row">
   <div class="column">
     <mat-radio-group
       aria-labelledby="example-radio-group-label"
       class="example-radio-group"
       [(ngModel)]="opcionSelected">
-      <mat-radio-button class="example-radio-button" *ngFor="let opcion of opciones" [value]="opcion" (change)="cambioOpcion($event)">
+      <mat-radio-button class="example-radio-button" *ngFor="let opcion of opciones1" [value]="opcion" (change)="cambioOpcion($event)">
+        {{opcion}}
+      </mat-radio-button>
+      <mat-radio-button class="example-radio-button" *ngFor="let opcion of opciones2" [value]="opcion" (change)="cambioOpcion($event)">
         {{opcion}}
       </mat-radio-button>
     </mat-radio-group>
   </div>
   <div class="column">
+    <mat-label style="font-size: x-large; font-weight: 500;">Filtros de datos:</mat-label>
+    <mat-radio-group [disabled]="opcionesSecundariasEnabled==false"
+      aria-labelledby="example-radio-group-label"
+      class="example-radio-group2"
+      [(ngModel)]="opcionSecundariaSelected">
+      <mat-radio-button class="example-radio-button2" *ngFor="let opcion of opcionesSecundarias" [value]="opcion" (change)="cambioOpcionSecundaria($event)">
+        {{opcion}}
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <div class="column">
+    <mat-form-field style="margin-top: 50px;">
+      <mat-label>Selecciona una comunidad</mat-label>
+      <mat-select [(ngModel)]="comunidadSelected" (selectionChange)="comunidadChange($event)">
+        <mat-option *ngFor="let comunidad of comunidadList" [value]="comunidad">{{comunidad}}</mat-option>
+      </mat-select>
+    </mat-form-field>
     <mat-form-field>
       <mat-label>Selecciona un año</mat-label>
       <mat-select [(ngModel)]="yearSelected" (selectionChange)="yearChange($event)">
@@ -17,15 +36,6 @@
       </mat-select>
     </mat-form-field>
   </div>
-  <div class="column">
-    <mat-form-field>
-      <mat-label>Selecciona una comunidad</mat-label>
-      <mat-select [(ngModel)]="comunidadSelected" (selectionChange)="comunidadChange($event)">
-        <mat-option *ngFor="let comunidad of comunidadList" [value]="comunidad">{{comunidad}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-</div>
 
 
 

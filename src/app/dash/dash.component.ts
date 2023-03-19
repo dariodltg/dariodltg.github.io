@@ -53,34 +53,40 @@ export class DashComponent {
   year: string ="";
   comunidad: string="";
   opcion: string="";
+  opcionSecundaria: string="";
   etiquetaSectores: string;
-  datosSectores = [];
+  datosSectores:number[] = [];
   totalNacional : number;
-  etiquetaBarras : string;
-  datosBarras = []; 
+  etiquetaLineas : string;
+  datosLineas:number[] = []; 
   yearList: string[] = ['2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021'];
+  
+  datosPoblacionLineas: number[] = [];
+  datosPoblacionSectores: number[] = [];
 
   recibirCambioOpcion(object){
     if(this.primera){
       this.primera=false;
+      this.opcionSecundaria = object.o2;
       this.opcion = object.o;
       this.year = object.y;
       this.comunidad = object.c;
       this.getDatosCsvSectores();
-      this.getDatosCsvBarras();
+      this.getDatosCsvLineas();
     }else{
-      if(this.opcion != object.o){
+      if(this.opcion != object.o || this.opcionSecundaria != object.o2){
         this.opcion = object.o;
+        this.opcionSecundaria = object.o2;
         this.getDatosCsvSectores();
-        this.getDatosCsvBarras();
+        this.getDatosCsvLineas();
       }else if(this.year != object.y){
         this.year = object.y;
         this.getDatosCsvSectores();
       }else if(this.comunidad != object.c){
         this.comunidad = object.c;
-        this.getDatosCsvBarras();
-      } 
-    } 
+        this.getDatosCsvLineas();
+      }
+    }
   }
 
   recibirClickComunidad(object){
@@ -88,8 +94,25 @@ export class DashComponent {
     this.menuFiltros.cambioComunidadPorMapa(idComunidad);
   }
 
-  async getDatosCsvBarras(){
-    this.datosBarras = [];
+  async getDatosCsvPoblacionLineas() {
+    this.datosPoblacionLineas = [];
+    var url = "/assets/poblacion.csv";
+    const response = await fetch(url);
+    const datos = await response.text();
+    //Quitamos las primeras 7 líneas que son los títulos y el global del país, y la última línea porque está en blanco.  
+    const datosPorLinea = datos.split('\n').slice(7);
+    var numFilaDeComunidad = this.getNumFilaSegunComunidad(this.comunidad);
+    var filaComunidad = datosPorLinea[numFilaDeComunidad];
+    var columnas = filaComunidad.split(';');
+    columnas = columnas.slice(1).reverse().slice(1);
+    columnas.forEach(element => {
+      this.datosPoblacionLineas.push(this.stringNumeroESPtoNumber(element))
+    });
+  }
+
+  async getDatosCsvLineas(){
+    this.datosLineas = [];
+    await this.getDatosCsvPoblacionLineas();
     for(let i=0; i<this.yearList.length;i++){
       var year= this.yearList[i];
       var url = "/assets/"+year+".csv";
@@ -100,31 +123,150 @@ export class DashComponent {
       var numFilaDeComunidad = this.getNumFilaSegunComunidad(this.comunidad);
       var filaComunidad = datosPorLinea[numFilaDeComunidad];
       var columnas = filaComunidad.split(';');
+      var datoNumerico: number;
       switch(this.opcion){
-        case "Inversión en I+D (%)":{
-          this.etiquetaBarras="Inversión en I+D (% del total nacional)";
-          this.datosBarras.push(this.stringNumeroESPtoNumber(columnas[2]));
-          break;
-        }
         case "Inversión en I+D (Total)":{
-          this.etiquetaBarras="Inversión en I+D (Total en miles de euros)";
-          this.datosBarras.push(this.stringNumeroESPtoNumber(columnas[1]));
+          this.etiquetaLineas="Inversión en I+D (Total en miles de euros)";
+          datoNumerico = this.stringNumeroESPtoNumber(columnas[1])
           break;
         }
-        case "Total empleados EJC":{
-          this.etiquetaBarras="Total empleados EJC";
-          this.datosBarras.push(this.stringNumeroESPtoNumber(columnas[3]));
+        case "Inversión en I+D (%)":{
+          this.etiquetaLineas="Inversión en I+D (% del total nacional)";
+          datoNumerico = this.stringNumeroESPtoNumber(columnas[2])
           break;
         }
-        case "Total investigadores EJC":{
-          this.etiquetaBarras="Total investigadores EJC";
-          this.datosBarras.push(this.stringNumeroESPtoNumber(columnas[5]));
+        case "Personal en I+D: Total":{
+          this.etiquetaLineas="Personal en I+D: Total";
+          datoNumerico = this.stringNumeroESPtoNumber(columnas[3])
+          if(this.opcionSecundaria == "% sobre la población"){
+            datoNumerico = (datoNumerico/this.datosPoblacionLineas[i])*100
+          }
           break;
         }
-      }   
+        case "Personal en I+D: Mujeres":{
+          this.etiquetaLineas="Personal en I+D: Mujeres";
+          datoNumerico = this.stringNumeroESPtoNumber(columnas[4])
+          if(this.opcionSecundaria == "% sobre la población"){
+            datoNumerico = (datoNumerico/this.datosPoblacionLineas[i])*100
+          }
+          break;
+        }
+        case "Investigadores: Total":{
+          this.etiquetaLineas="Investigadores: Total";
+          datoNumerico = this.stringNumeroESPtoNumber(columnas[5])
+          if(this.opcionSecundaria == "% sobre la población"){
+            datoNumerico = (datoNumerico/this.datosPoblacionLineas[i])*100
+          }
+          break;
+        }
+        case "Investigadores: Mujeres":{
+          this.etiquetaLineas="Investigadores: Mujeres";
+          datoNumerico = this.stringNumeroESPtoNumber(columnas[6])
+          if(this.opcionSecundaria == "% sobre la población"){
+            datoNumerico = (datoNumerico/this.datosPoblacionLineas[i])*100
+          }
+          break;
+        }        
+      } 
+      this.datosLineas.push(datoNumerico); //Añadimos el dato para el gráfico de líneas
     }
-    this.graficoBarras.updateChart(this.datosBarras, this.etiquetaBarras, this.comunidad);
+    this.graficoBarras.updateChart(this.datosLineas, this.etiquetaLineas, this.comunidad);
   }
+
+  async getDatosCsvSectores() {
+    this.datosSectores = []
+    await this.getDatosCsvPoblacionSectores();
+    const url = "/assets/"+this.year+".csv";
+    const response = await fetch(url);
+    const datos = await response.text();
+    //Quitamos las primeras 7 líneas que son los títulos y el global del país, y la última línea porque está en blanco.  
+    const datosPorLinea = datos.split('\n').slice(7);
+    var columnasLineaTotalNacional = datos.split('\n')[6].split(';');
+    var datoNumerico: number;
+    for(let i=0; i<datosPorLinea.length-5;i++){
+      var fila = datosPorLinea[i];
+      var columnas = fila.split(';');
+      switch(this.opcion){
+        case "Inversión en I+D (Total)":{
+          this.etiquetaSectores="Inversión en I+D (Total en miles de euros)";
+          this.totalNacional = this.stringNumeroESPtoNumber(columnasLineaTotalNacional[1])
+          datoNumerico = this.stringNumeroESPtoNumber(columnas[1])
+          break;
+        }
+        case "Inversión en I+D (%)":{
+          this.etiquetaSectores="Inversión en I+D (% del total nacional)";
+          this.totalNacional = this.stringNumeroESPtoNumber(columnasLineaTotalNacional[2])
+          datoNumerico = this.stringNumeroESPtoNumber(columnas[2])
+          break;
+        }        
+        case "Personal en I+D: Total":{
+          this.etiquetaSectores="Personal en I+D: Total";
+          this.totalNacional = this.stringNumeroESPtoNumber(columnasLineaTotalNacional[3])
+          datoNumerico = this.stringNumeroESPtoNumber(columnas[3])
+          if(this.opcionSecundaria == "% sobre la población"){
+            datoNumerico = (datoNumerico/this.datosPoblacionSectores[i])*100
+            this.totalNacional=100;
+          }
+          break;
+        }
+        case "Personal en I+D: Mujeres":{
+          this.etiquetaSectores="Personal en I+D: Mujeres";
+          this.totalNacional = this.stringNumeroESPtoNumber(columnasLineaTotalNacional[4])
+          datoNumerico = this.stringNumeroESPtoNumber(columnas[4])
+          if(this.opcionSecundaria == "% sobre la población"){
+            datoNumerico = (datoNumerico/this.datosPoblacionSectores[i])*100
+            this.totalNacional=100;
+          }
+          break;
+        }
+        case "Investigadores: Total":{
+          this.etiquetaSectores="Investigadores: Total";
+          this.totalNacional = this.stringNumeroESPtoNumber(columnasLineaTotalNacional[5])
+          datoNumerico = this.stringNumeroESPtoNumber(columnas[5])
+          if(this.opcionSecundaria == "% sobre la población"){
+            datoNumerico = (datoNumerico/this.datosPoblacionSectores[i])*100
+            this.totalNacional=100;
+          }
+          break;
+        }
+        case "Investigadores: Mujeres":{
+          this.etiquetaSectores="Investigadores: Mujeres";
+          this.totalNacional = this.stringNumeroESPtoNumber(columnasLineaTotalNacional[6])
+          datoNumerico = this.stringNumeroESPtoNumber(columnas[6])
+          if(this.opcionSecundaria == "% sobre la población"){
+            datoNumerico = (datoNumerico/this.datosPoblacionSectores[i])*100
+            this.totalNacional=100;
+          }
+          break;
+        }
+      }
+      this.datosSectores.push(datoNumerico);
+    }
+    this.graficoSectores.updateChart(this.datosSectores, this.etiquetaSectores, this.year);
+    this.mapaCoropletas.updateMap(this.datosSectores, this.etiquetaSectores, this.totalNacional);
+   }
+
+  async getDatosCsvPoblacionSectores() {
+    this.datosPoblacionSectores = [];
+    var url = "/assets/poblacion.csv";
+    const response = await fetch(url);
+    const datos = await response.text();
+    //Quitamos las primeras 7 líneas que son los títulos y el global del país, y la última línea porque está en blanco.  
+    const datosPorLinea = datos.split('\n').slice(7);
+    var columnaPoblacionYear = this.yearList.reverse().indexOf(this.year) + 1;
+    for(let i=0; i<datosPorLinea.length-5;i++){
+      var columnas = datosPorLinea[i].split(';');
+      var datoNumericoPoblacion = this.stringNumeroESPtoNumber(columnas[columnaPoblacionYear]);
+      this.datosPoblacionSectores.push(datoNumericoPoblacion);
+    }
+  }
+
+  stringNumeroESPtoNumber(str:string){
+    var cadena = str.replace(/\./g,'');
+    cadena = cadena.replace(/,/g,'.');
+    var numero: number = Number(cadena);
+    return numero;
+   }
 
   getNumFilaSegunComunidad(comunidad: string){
     const comunidadList: string[] = ['Andalucía','Aragón','Asturias','Baleares','Canarias','Cantabria','Castilla y León',
@@ -132,53 +274,4 @@ export class DashComponent {
   'Navarra','País Vasco','La Rioja','Ceuta','Melilla'];
     return comunidadList.indexOf(comunidad);
   }
-
-  async getDatosCsvSectores() {
-    this.datosSectores = []
-    const url = "/assets/"+this.year+".csv";
-    const response = await fetch(url);
-    const datos = await response.text();
-    //Quitamos las primeras 7 líneas que son los títulos y el global del país, y la última línea porque está en blanco.  
-    const datosPorLinea = datos.split('\n').slice(7);
-    var columnasLineaTotalNacional = datos.split('\n')[6].split(';');
-    for(let i=0; i<datosPorLinea.length-5;i++){
-      var fila = datosPorLinea[i];
-      var columnas = fila.split(';');
-      switch(this.opcion){
-        case "Inversión en I+D (%)":{
-          this.etiquetaSectores="Inversión en I+D (% del total nacional)";
-          this.totalNacional = this.stringNumeroESPtoNumber(columnasLineaTotalNacional[2])
-          this.datosSectores.push(this.stringNumeroESPtoNumber(columnas[2]));
-          break;
-        }
-        case "Inversión en I+D (Total)":{
-          this.etiquetaSectores="Inversión en I+D (Total en miles de euros)";
-          this.totalNacional = this.stringNumeroESPtoNumber(columnasLineaTotalNacional[1])
-          this.datosSectores.push(this.stringNumeroESPtoNumber(columnas[1]));
-          break;
-        }
-        case "Total empleados EJC":{
-          this.etiquetaSectores="Total empleados EJC";
-          this.totalNacional = this.stringNumeroESPtoNumber(columnasLineaTotalNacional[3])
-          this.datosSectores.push(this.stringNumeroESPtoNumber(columnas[3]));
-          break;
-        }
-        case "Total investigadores EJC":{
-          this.etiquetaSectores="Total investigadores EJC";
-          this.totalNacional = this.stringNumeroESPtoNumber(columnasLineaTotalNacional[5])
-          this.datosSectores.push(this.stringNumeroESPtoNumber(columnas[5]));
-          break;
-        }
-      }
-    }
-    this.graficoSectores.updateChart(this.datosSectores, this.etiquetaSectores, this.year);
-    this.mapaCoropletas.updateMap(this.datosSectores, this.etiquetaSectores, this.totalNacional);
-   }
-
-   stringNumeroESPtoNumber(str:string){
-    var cadena = str.replace(/\./g,'');
-    cadena = cadena.replace(/,/g,'.');
-    var numero: number = Number(cadena);
-    return numero;
-   }
 }
