@@ -50,7 +50,7 @@ export class MapaCoropletasComponent implements OnInit {
       offset:[0,-25],
       visibility: false
     })
-    this.globus.planet.renderer.backgroundColor.set(0, 0, 0, 1.0);
+    this.globus.planet.renderer.backgroundColor.set(0.465, 0.465, 0.465);
 
   }
   
