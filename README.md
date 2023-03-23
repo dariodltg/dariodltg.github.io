@@ -11,6 +11,3 @@ Framework utilizado:
 Librerías utilizadas:
 - [ChartJS](https://github.com/chartjs/Chart.js) 4.2.1 
 - [Openglobus](https://github.com/openglobus/openglobus) 0.10.6
-
-Para ejecutarlo, hay que situarse en el directorio del proyecto y escribir en una terminal: `ng serve`
-Después en un navegador, vamos a la url `http://localhost:4200/`
